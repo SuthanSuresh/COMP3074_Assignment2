@@ -1,7 +1,11 @@
 import React, {useState} from "react";
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import {NavigationContainer} from "@react-navigation/native";
+import {createStackNavigator} from "@react-navigation/stack";
 
-export default function App() {
+const Stack= createStackNavigator();
+
+function Mainscreen({navigation}){
   const [base, setBase]= useState("CAD");
   const [destination, setDestination]= useState("USD");
   const [amount, setAmount]= useState("1");
@@ -72,12 +76,50 @@ export default function App() {
         {error? <Text style={StyleSheet.error}>{error}</Text>: null}
 
         <View style={styles.convertButton}>
-          <Button style={styles.buttonTitle}title="Convert" onPress={Conversion} color="white" />
+          <Button title="Convert" onPress={Conversion} color="white" />
+        </View>
+
+        <View style={styles.aboutButton}>
+          <Button title="About Us" onPress={()=> navigation.navigate("About")} color="white" />
         </View>
       </View>
     </View>
   );
 }
+
+function AboutScreen(){
+  return(
+    <View style={styles.container}>
+      <Text style={styles.aboutTitle}>About Us</Text>
+      <Text style={styles.studentinfo}>Full Name: Suthan Sureshkumar</Text>
+      <Text style={styles.studentinfo}>Student ID: 101511337</Text>
+
+      <Text style={styles.seperator}>----------------------------------------------</Text>
+
+      <Text style={styles.studentinfo}>Full Name: Ayesha Akbar</Text>
+      <Text style={styles.studentinfo}>Student ID: 100949840</Text>
+
+      <Text style={styles.seperator}>----------------------------------------------</Text>
+
+      <Text style={styles.studentinfo}>This is a curreny conversion app, that was created by Ayesha and Suthan as part of Assignment 2 for COMP3074.</Text>
+
+    </View>
+  );
+}
+
+export default function App(){
+  return(
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Main">
+        <Stack.Screen name="Main" component={Mainscreen} options={{title: "Currency Converter"}} />
+        <Stack.Screen name="About" component={AboutScreen} options={{title: "About"}} />
+      </Stack.Navigator>
+
+    </NavigationContainer>
+  );
+}
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -115,4 +157,17 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: 'green',
   },
+  aboutButton:{
+    borderRadius: 10,
+    overflow: 'hidden',
+    backgroundColor: '#4A4A4A',
+  },
+  aboutTitle:{
+    marginBottom: 15,
+    fontSize: 25,
+  },
+  studentinfo:{
+    marginBottom: 15,
+    fontSize: 20,
+  }
 });
