@@ -1,11 +1,80 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {useState} from "react";
+import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 
 export default function App() {
+  const [base, setBase]= useState("CAD");
+  const [destination, setDestination]= useState("USD");
+  const [amount, setAmount]= useState("1");
+  const [error, setError] = useState("");
+
+  const validateInputs = () => {
+    const codeRegex= /^[A-Z]{3}$/; 
+
+    if(!codeRegex.test(base)){
+      return "Currency codes must be 3-letter uppercase ISO codes.(e.g: CAD)"
+    }
+
+    if(!codeRegex.test(destination)){
+      return "Currency codes must be 3-letter uppercase ISO codes.(e.g: CAD)"
+    }
+
+    const num= Number(amount);
+    if(isNaN(num) || num <=0){
+      return "Amount must be a positive number."
+    }
+    return null; 
+  };
+
+  const Conversion = () => {
+    const validationError = validateInputs();
+
+    if(validationError){
+      setError(validationError);
+    }
+    else{
+      setError("");
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <Text style={styles.title}>Currency Converter</Text>
+
+      <View style={styles.inputSection}>
+        <Text style={styles.label}>Base Currency</Text>
+        <TextInput 
+          value={base}
+          onChangeText={(t)=> setBase(t.toUpperCase())}
+          style={styles.input}
+          maxLength={3}
+        />
+      </View>
+
+      <View style={styles.inputSection}>
+        <Text style={styles.label}>Destination Currency</Text>
+        <TextInput 
+          value={destination}
+          onChangeText={(t)=> setDestination(t.toUpperCase())}
+          style={styles.input}
+          maxLength={3}
+        />
+      </View>
+
+      <View style={styles.inputSection}>
+        <Text style={styles.label}>Amount</Text>
+        <TextInput 
+          value={amount}
+          onChangeText={setAmount}
+          keyboardType="numeric"
+          style={styles.input}
+        />
+
+        {error? <Text style={StyleSheet.error}>{error}</Text>: null}
+
+        <View style={styles.convertButton}>
+          <Button style={styles.buttonTitle}title="Convert" onPress={Conversion} color="white" />
+        </View>
+      </View>
     </View>
   );
 }
@@ -13,8 +82,37 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+    backgroundColor: 'grey',
     justifyContent: 'center',
+    padding: 25,
+  },
+
+  title:{
+    fontSize: 25,
+    textAlign: 'center', 
+    fontWeight: 'bold',
+    marginBottom: 25,
+  },
+  inputSection:{
+    marginBottom: 15,
+  },
+  label: {
+    fontsize: 20,
+    marginBottom: 8,
+    fontWeight: 700,
+  },
+  input:{
+    borderWidth:1,
+    borderColor: 'black',
+    backgroundColor: 'white',
+    fontSize: 15,
+    padding: 10,
+    borderRadius:10,
+  },
+  convertButton:{
+    borderRadius: 10,
+    marginTop: 10,
+    overflow: 'hidden',
+    backgroundColor: 'green',
   },
 });
