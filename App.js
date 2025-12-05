@@ -52,7 +52,7 @@ function MainScreen({ navigation }) {
       return null;
     }
 
-    return rate; // e.g. 0.73
+    return rate; 
   };
 
 
@@ -71,13 +71,27 @@ function MainScreen({ navigation }) {
     setIsLoading(true);
 
     try {
+      
       const url = `https://api.freecurrencyapi.com/v1/latest?apikey=${API_KEY}&base_currency=${base}&currencies=${destination}`;
 
       const response = await fetch(url);
       const data = await response.json();
       console.log("API response:", data);
+
+      // Handle API-level errors
       
-       if (rate !== null) {
+      if (data && data.error) {
+          setError(`API error: ${data.error}`);
+          return;
+        }
+
+      if (data && data.message && !data.data) {
+        setError(`API error: ${data.message}`);
+        return;
+      }
+
+      
+      if (rate !== null) {
       const numAmount = Number(amount);
       setConvertedAmount(rate * numAmount);
     } else {
@@ -86,6 +100,7 @@ function MainScreen({ navigation }) {
     } catch (e) {
       console.log("API error:", e);
       setError("Network error. Please try again.");
+
     } finally {
       setIsLoading(false);
     }
