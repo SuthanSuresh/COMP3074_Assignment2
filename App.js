@@ -1,173 +1,237 @@
-import React, {useState} from "react";
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
-import {NavigationContainer} from "@react-navigation/native";
-import {createStackNavigator} from "@react-navigation/stack";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
-const Stack= createStackNavigator();
+const Stack = createStackNavigator();
 
-function Mainscreen({navigation}){
-  const [base, setBase]= useState("CAD");
-  const [destination, setDestination]= useState("USD");
-  const [amount, setAmount]= useState("1");
+function MainScreen({ navigation }) {
+  const [base, setBase] = useState("CAD");
+  const [destination, setDestination] = useState("USD");
+  const [amount, setAmount] = useState("1");
   const [error, setError] = useState("");
 
   const validateInputs = () => {
-    const codeRegex= /^[A-Z]{3}$/; 
+    const codeRegex = /^[A-Z]{3}$/;
 
-    if(!codeRegex.test(base)){
-      return "Currency codes must be 3-letter uppercase ISO codes.(e.g: CAD)"
+    if (!codeRegex.test(base)) {
+      return "Currency codes must be 3-letter uppercase ISO codes (e.g: CAD).";
     }
 
-    if(!codeRegex.test(destination)){
-      return "Currency codes must be 3-letter uppercase ISO codes.(e.g: CAD)"
+    if (!codeRegex.test(destination)) {
+      return "Currency codes must be 3-letter uppercase ISO codes (e.g: CAD).";
     }
 
-    const num= Number(amount);
-    if(isNaN(num) || num <=0){
-      return "Amount must be a positive number."
+    const num = Number(amount);
+    if (isNaN(num) || num <= 0) {
+      return "Amount must be a positive number.";
     }
-    return null; 
+
+    return null;
   };
 
   const Conversion = () => {
     const validationError = validateInputs();
 
-    if(validationError){
+    if (validationError) {
       setError(validationError);
-    }
-    else{
+    } else {
       setError("");
+      // later we'll add the real API call here
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Currency Converter</Text>
+      <View style={styles.card}>
+        <Text style={styles.title}>Currency Converter</Text>
 
-      <View style={styles.inputSection}>
-        <Text style={styles.label}>Base Currency</Text>
-        <TextInput 
-          value={base}
-          onChangeText={(t)=> setBase(t.toUpperCase())}
-          style={styles.input}
-          maxLength={3}
-        />
-      </View>
-
-      <View style={styles.inputSection}>
-        <Text style={styles.label}>Destination Currency</Text>
-        <TextInput 
-          value={destination}
-          onChangeText={(t)=> setDestination(t.toUpperCase())}
-          style={styles.input}
-          maxLength={3}
-        />
-      </View>
-
-      <View style={styles.inputSection}>
-        <Text style={styles.label}>Amount</Text>
-        <TextInput 
-          value={amount}
-          onChangeText={setAmount}
-          keyboardType="numeric"
-          style={styles.input}
-        />
-
-        {error? <Text style={StyleSheet.error}>{error}</Text>: null}
-
-        <View style={styles.convertButton}>
-          <Button title="Convert" onPress={Conversion} color="white" />
+        <View style={styles.inputSection}>
+          <Text style={styles.label}>Base Currency</Text>
+          <TextInput
+            value={base}
+            onChangeText={(t) => setBase(t.toUpperCase())}
+            style={styles.input}
+            maxLength={3}
+          />
         </View>
 
-        <View style={styles.aboutButton}>
-          <Button title="About Us" onPress={()=> navigation.navigate("About")} color="white" />
+        <View style={styles.inputSection}>
+          <Text style={styles.label}>Destination Currency</Text>
+          <TextInput
+            value={destination}
+            onChangeText={(t) => setDestination(t.toUpperCase())}
+            style={styles.input}
+            maxLength={3}
+          />
         </View>
+
+        <View style={styles.inputSection}>
+          <Text style={styles.label}>Amount</Text>
+          <TextInput
+            value={amount}
+            onChangeText={setAmount}
+            keyboardType="numeric"
+            style={styles.input}
+          />
+        </View>
+
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+
+        <TouchableOpacity style={styles.convertButton} onPress={Conversion}>
+          <Text style={styles.convertButtonText}>Convert</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.aboutButton}
+          onPress={() => navigation.navigate("About")}
+        >
+          <Text style={styles.aboutButtonText}>About Us</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 }
 
-function AboutScreen(){
-  return(
+function AboutScreen() {
+  return (
     <View style={styles.container}>
-      <Text style={styles.aboutTitle}>About Us</Text>
-      <Text style={styles.studentinfo}>Full Name: Suthan Sureshkumar</Text>
-      <Text style={styles.studentinfo}>Student ID: 101511337</Text>
+      <View style={styles.card}>
+        <Text style={styles.aboutTitle}>About Us</Text>
+        <Text style={styles.studentinfo}>Full Name: Suthan Sureshkumar</Text>
+        <Text style={styles.studentinfo}>Student ID: 101511337</Text>
 
-      <Text style={styles.seperator}>----------------------------------------------</Text>
+        <Text style={styles.separator}>
+          ----------------------------------------------
+        </Text>
 
-      <Text style={styles.studentinfo}>Full Name: Ayesha Akbar</Text>
-      <Text style={styles.studentinfo}>Student ID: 100949840</Text>
+        <Text style={styles.studentinfo}>Full Name: Ayesha Akbar</Text>
+        <Text style={styles.studentinfo}>Student ID: 100949840</Text>
 
-      <Text style={styles.seperator}>----------------------------------------------</Text>
+        <Text style={styles.separator}>
+          ----------------------------------------------
+        </Text>
 
-      <Text style={styles.studentinfo}>This is a curreny conversion app, that was created by Ayesha and Suthan as part of Assignment 2 for COMP3074.</Text>
-
+        <Text style={styles.studentinfo}>
+          This is a currency conversion app that was created by Ayesha and
+          Suthan as part of Assignment 2 for COMP3074.
+        </Text>
+      </View>
     </View>
   );
 }
 
-export default function App(){
-  return(
+export default function App() {
+  return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Main">
-        <Stack.Screen name="Main" component={Mainscreen} options={{title: "Currency Converter"}} />
-        <Stack.Screen name="About" component={AboutScreen} options={{title: "About"}} />
+        <Stack.Screen
+          name="Main"
+          component={MainScreen}
+          options={{ title: "Currency Converter" }}
+        />
+        <Stack.Screen
+          name="About"
+          component={AboutScreen}
+          options={{ title: "About" }}
+        />
       </Stack.Navigator>
-
     </NavigationContainer>
   );
 }
 
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'grey',
-    justifyContent: 'center',
-    padding: 25,
+    backgroundColor: "#E5E5E5",
+    justifyContent: "center",
+    padding: 20,
   },
-
-  title:{
-    fontSize: 25,
-    textAlign: 'center', 
-    fontWeight: 'bold',
-    marginBottom: 25,
+  card: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 20,
+    elevation: 3, // Android shadow
+    shadowColor: "#000", // iOS shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
   },
-  inputSection:{
-    marginBottom: 15,
+  title: {
+    fontSize: 26,
+    textAlign: "center",
+    fontWeight: "bold",
+    marginBottom: 24,
+    color: "#1E8449",
+  },
+  inputSection: {
+    marginBottom: 16,
   },
   label: {
-    fontsize: 20,
-    marginBottom: 8,
-    fontWeight: 700,
+    fontSize: 18,
+    marginBottom: 6,
+    fontWeight: "bold",
+    color: "#333",
   },
-  input:{
-    borderWidth:1,
-    borderColor: 'black',
-    backgroundColor: 'white',
-    fontSize: 15,
+  input: {
+    borderWidth: 1,
+    borderColor: "#CCC",
+    backgroundColor: "white",
+    fontSize: 16,
     padding: 10,
-    borderRadius:10,
-  },
-  convertButton:{
     borderRadius: 10,
+  },
+  convertButton: {
+    backgroundColor: "#1E8449",
+    borderRadius: 12,
     marginTop: 10,
-    overflow: 'hidden',
-    backgroundColor: 'green',
+    paddingVertical: 12,
+    alignItems: "center",
   },
-  aboutButton:{
-    borderRadius: 10,
-    overflow: 'hidden',
-    backgroundColor: '#4A4A4A',
+  convertButtonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
   },
-  aboutTitle:{
-    marginBottom: 15,
-    fontSize: 25,
+  aboutButton: {
+    backgroundColor: "#555",
+    borderRadius: 12,
+    marginTop: 10,
+    paddingVertical: 12,
+    alignItems: "center",
   },
-  studentinfo:{
-    marginBottom: 15,
-    fontSize: 20,
-  }
+  aboutButtonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  aboutTitle: {
+    marginBottom: 18,
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#1E8449",
+  },
+  studentinfo: {
+    marginBottom: 12,
+    fontSize: 18,
+    color: "#222",
+  },
+  separator: {
+    marginVertical: 8,
+    textAlign: "center",
+    color: "#888",
+  },
+  error: {
+    color: "red",
+    marginTop: 6,
+    marginBottom: 4,
+    fontSize: 16,
+  },
 });
