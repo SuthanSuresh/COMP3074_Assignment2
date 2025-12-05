@@ -40,6 +40,22 @@ function MainScreen({ navigation }) {
     return null;
   };
 
+    const getRateFromResponse = (data, currencyCode) => {
+    if (!data || !data.data) {
+      return null;
+    }
+
+    // read the rate for the given currency
+    const rate = data.data[currencyCode];
+
+    if (typeof rate !== "number") {
+      return null;
+    }
+
+    return rate; // e.g. 0.73
+  };
+
+
   const Conversion = async () => {
     const validationError = validateInputs();
 
@@ -55,20 +71,18 @@ function MainScreen({ navigation }) {
     setIsLoading(true);
 
     try {
-      // FreeCurrencyAPI: https://api.freecurrencyapi.com/v1/latest
       const url = `https://api.freecurrencyapi.com/v1/latest?apikey=${API_KEY}&base_currency=${base}&currencies=${destination}`;
 
       const response = await fetch(url);
       const data = await response.json();
       console.log("API response:", data);
-
-      if (data && data.data && typeof data.data[destination] === "number") {
-        const rate = data.data[destination]; // e.g. 0.73
-        const numAmount = Number(amount);
-        setConvertedAmount(rate * numAmount); // final converted amount
-      } else {
-        setError("Unable to get exchange rate. Please try again.");
-      }
+      
+       if (rate !== null) {
+      const numAmount = Number(amount);
+      setConvertedAmount(rate * numAmount);
+    } else {
+      setError("Unable to get exchange rate. Please try again.");
+    }
     } catch (e) {
       console.log("API error:", e);
       setError("Network error. Please try again.");
