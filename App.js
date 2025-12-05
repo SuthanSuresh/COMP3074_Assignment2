@@ -9,6 +9,8 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
+const API_KEY = "fca_live_wf2aZBB398NMmejQZ7zd5geglOhT7aYpQahucMR3";
+
 const Stack = createStackNavigator();
 
 function MainScreen({ navigation }) {
@@ -18,8 +20,6 @@ function MainScreen({ navigation }) {
   const [error, setError] = useState("");
   const [convertedAmount, setConvertedAmount] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
-
 
   const validateInputs = () => {
     const codeRegex = /^[A-Z]{3}$/;
@@ -41,39 +41,41 @@ function MainScreen({ navigation }) {
   };
 
   const Conversion = async () => {
-  const validationError = validateInputs();
+    const validationError = validateInputs();
 
-  if (validationError) {
-    setError(validationError);
-    setConvertedAmount(null);
-    return;
-  }
-
-  // inputs are valid
-  setError("");
-  setConvertedAmount(null);
-  setIsLoading(true);
-
-  try {
-    // Free API, no key needed
-    const url = `https://api.exchangerate.host/convert?from=${base}&to=${destination}&amount=${amount}`;
-
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (data && typeof data.result === "number") {
-      setConvertedAmount(data.result);
-    } else {
-      setError("Unable to get exchange rate. Please try again.");
+    if (validationError) {
+      setError(validationError);
+      setConvertedAmount(null);
+      return;
     }
-  } catch (e) {
-    setError("Network error. Please try again.");
-  } finally {
-    setIsLoading(false);
-  }
-};
 
+    // inputs are valid
+    setError("");
+    setConvertedAmount(null);
+    setIsLoading(true);
 
+    try {
+      // FreeCurrencyAPI: https://api.freecurrencyapi.com/v1/latest
+      const url = `https://api.freecurrencyapi.com/v1/latest?apikey=${API_KEY}&base_currency=${base}&currencies=${destination}`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log("API response:", data);
+
+      if (data && data.data && typeof data.data[destination] === "number") {
+        const rate = data.data[destination]; // e.g. 0.73
+        const numAmount = Number(amount);
+        setConvertedAmount(rate * numAmount); // final converted amount
+      } else {
+        setError("Unable to get exchange rate. Please try again.");
+      }
+    } catch (e) {
+      console.log("API error:", e);
+      setError("Network error. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -112,14 +114,17 @@ function MainScreen({ navigation }) {
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        {convertedAmount !== null && !error && (
+        {isLoading ? (
+          <Text style={styles.loadingText}>Getting latest exchange rate...</Text>
+        ) : null}
+
+        {convertedAmount !== null && !error && !isLoading && (
           <View style={styles.resultBox}>
             <Text style={styles.resultText}>
               {amount} {base} = {convertedAmount.toFixed(2)} {destination}
             </Text>
           </View>
         )}
-
 
         <TouchableOpacity style={styles.convertButton} onPress={Conversion}>
           <Text style={styles.convertButtonText}>Convert</Text>
@@ -270,6 +275,12 @@ const styles = StyleSheet.create({
     marginTop: 6,
     marginBottom: 4,
     fontSize: 16,
+  },
+  loadingText: {
+    marginTop: 4,
+    marginBottom: 4,
+    fontSize: 14,
+    color: "#555",
   },
   resultBox: {
     marginTop: 12,
