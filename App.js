@@ -16,6 +16,10 @@ function MainScreen({ navigation }) {
   const [destination, setDestination] = useState("USD");
   const [amount, setAmount] = useState("1");
   const [error, setError] = useState("");
+  const [convertedAmount, setConvertedAmount] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+
 
   const validateInputs = () => {
     const codeRegex = /^[A-Z]{3}$/;
@@ -36,16 +40,40 @@ function MainScreen({ navigation }) {
     return null;
   };
 
-  const Conversion = () => {
-    const validationError = validateInputs();
+  const Conversion = async () => {
+  const validationError = validateInputs();
 
-    if (validationError) {
-      setError(validationError);
+  if (validationError) {
+    setError(validationError);
+    setConvertedAmount(null);
+    return;
+  }
+
+  // inputs are valid
+  setError("");
+  setConvertedAmount(null);
+  setIsLoading(true);
+
+  try {
+    // Free API, no key needed
+    const url = `https://api.exchangerate.host/convert?from=${base}&to=${destination}&amount=${amount}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data && typeof data.result === "number") {
+      setConvertedAmount(data.result);
     } else {
-      setError("");
-      // later we'll add the real API call here
+      setError("Unable to get exchange rate. Please try again.");
     }
-  };
+  } catch (e) {
+    setError("Network error. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
 
   return (
     <View style={styles.container}>
@@ -83,6 +111,15 @@ function MainScreen({ navigation }) {
         </View>
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
+
+        {convertedAmount !== null && !error && (
+          <View style={styles.resultBox}>
+            <Text style={styles.resultText}>
+              {amount} {base} = {convertedAmount.toFixed(2)} {destination}
+            </Text>
+          </View>
+        )}
+
 
         <TouchableOpacity style={styles.convertButton} onPress={Conversion}>
           <Text style={styles.convertButtonText}>Convert</Text>
@@ -233,5 +270,18 @@ const styles = StyleSheet.create({
     marginTop: 6,
     marginBottom: 4,
     fontSize: 16,
+  },
+  resultBox: {
+    marginTop: 12,
+    marginBottom: 4,
+    padding: 12,
+    backgroundColor: "#E9F7EF",
+    borderRadius: 10,
+  },
+  resultText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#145A32",
+    textAlign: "center",
   },
 });
