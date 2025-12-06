@@ -247,7 +247,7 @@ function AboutScreen() {
 
         <Text style={styles.studentinfo}>
           This is a currency conversion app that was created by Ayesha and
-          Suthan as part of Assignment 2 for COMP3074.
+          Suthan as part of Assignment 2 for COMP3074. It is a React Native app.
         </Text>
       </View>
     </View>
