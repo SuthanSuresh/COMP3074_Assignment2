@@ -182,7 +182,7 @@ function MainScreen({ navigation }) {
 
 
         <View style={styles.inputSection}>
-          <Text style={styles.label}>Amount</Text>
+          <Text style={styles.label}>Converting Amount</Text>
           <TextInput
             value={amount}
             onChangeText={setAmount}
