@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   convertButton: {
-    backgroundColor: "#1E8449",
+    backgroundColor: "#1b703f",
     borderRadius: 12,
     marginTop: 10,
     paddingVertical: 12,
