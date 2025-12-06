@@ -20,6 +20,8 @@ function MainScreen({ navigation }) {
   const [error, setError] = useState("");
   const [convertedAmount, setConvertedAmount] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [rateUsed, setRateUsed] = useState(null);
+
 
   const validateInputs = () => {
     const codeRegex = /^[A-Z]{3}$/;
@@ -45,7 +47,10 @@ function MainScreen({ navigation }) {
       return null;
     }
 
-    // read the rate for the given currency
+    if (!Object.prototype.hasOwnProperty.call(data.data, currencyCode)) {
+    return "MISSING";   
+  }
+
     const rate = data.data[currencyCode];
 
     if (typeof rate !== "number") {
@@ -62,12 +67,14 @@ function MainScreen({ navigation }) {
     if (validationError) {
       setError(validationError);
       setConvertedAmount(null);
+      setRateUsed(null);  
       return;
     }
 
     // inputs are valid
     setError("");
     setConvertedAmount(null);
+    setRateUsed(null);  
     setIsLoading(true);
 
     try {
@@ -76,6 +83,12 @@ function MainScreen({ navigation }) {
 
       const response = await fetch(url);
       const data = await response.json();
+
+      if (!response.ok) {
+    setError(`Server error (${response.status}). Sorry error! Please try again later.`);
+    return;
+  }
+
       console.log("API response:", data);
 
       // Handle API-level errors
@@ -90,10 +103,17 @@ function MainScreen({ navigation }) {
         return;
       }
 
+      const rate = getRateFromResponse(data, destination);
+
+      if (rate === "MISSING") {
+      setError(`No exchange rate available for ${destination}. Please check the currency code.`);
+      return;
+}
       
       if (rate !== null) {
       const numAmount = Number(amount);
       setConvertedAmount(rate * numAmount);
+      setRateUsed(rate);  
     } else {
       setError("Unable to get exchange rate. Please try again.");
     }
@@ -152,6 +172,12 @@ function MainScreen({ navigation }) {
             <Text style={styles.resultText}>
               {amount} {base} = {convertedAmount.toFixed(2)} {destination}
             </Text>
+
+            {rateUsed !== null && (
+              <Text style={styles.rateText}>
+                Rate used: {rateUsed}
+              </Text>
+            )}
           </View>
         )}
 
@@ -324,4 +350,12 @@ const styles = StyleSheet.create({
     color: "#145A32",
     textAlign: "center",
   },
+
+    rateText: {
+    marginTop: 6,
+    fontSize: 16,
+    color: "#1E8449",
+    textAlign: "center",
+  },
+
 });
