@@ -401,7 +401,7 @@ picker: {
 },
 
 swapButton: {
-  backgroundColor: "#1E8449",
+  backgroundColor: "#1b703f",
   paddingVertical: 12,
   borderRadius: 12,
   alignItems: "center",
