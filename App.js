@@ -159,14 +159,20 @@ function MainScreen({ navigation }) {
 
 
         <View style={styles.inputSection}>
-          <Text style={styles.label}>Destination Currency</Text>
-          <TextInput
-            value={destination}
-            onChangeText={(t) => setDestination(t.toUpperCase())}
-            style={styles.input}
-            maxLength={3}
-          />
+        <Text style={styles.label}>Destination Currency</Text>
+        <View style={styles.pickerWrapper}>
+          <Picker
+            selectedValue={destination}
+            onValueChange={(value) => setDestination(value)}
+            style={styles.picker}
+            dropdownIconColor="#1E8449" >
+            {CURRENCIES.map((code) => (
+              <Picker.Item key={code} label={code} value={code} />
+            ))}
+          </Picker>
         </View>
+      </View>
+
 
         <View style={styles.inputSection}>
           <Text style={styles.label}>Amount</Text>
