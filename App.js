@@ -1,14 +1,9 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet,Text,View,TextInput,TouchableOpacity, } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Picker } from "@react-native-picker/picker"; 
+
 
 
 // API Key used 
@@ -173,6 +168,18 @@ function MainScreen({ navigation }) {
         </View>
       </View>
 
+      <TouchableOpacity
+        style={styles.swapButton}
+        onPress={() => {
+          const temp = base;
+          setBase(destination);
+          setDestination(temp);
+        }}>
+        <Text style={styles.swapButtonText}>↕ Swap Currencies</Text>
+      </TouchableOpacity>
+
+
+
 
         <View style={styles.inputSection}>
           <Text style={styles.label}>Amount</Text>
@@ -221,6 +228,7 @@ function MainScreen({ navigation }) {
 
 function AboutScreen() {
   return (
+
     <View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.aboutTitle}>About Us</Text>
@@ -391,6 +399,20 @@ const styles = StyleSheet.create({
 },
 picker: {
   height: 48,
+},
+
+swapButton: {
+  backgroundColor: "#1E8449",
+  paddingVertical: 12,
+  borderRadius: 12,
+  alignItems: "center",
+  marginTop: 10,
+  marginBottom: 20,
+},
+swapButtonText: {
+  color: "white",
+  fontSize: 18,
+  fontWeight: "bold",
 },
 
 
