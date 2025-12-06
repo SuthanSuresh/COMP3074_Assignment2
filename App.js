@@ -232,16 +232,15 @@ function AboutScreen() {
     <View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.aboutTitle}>About Us</Text>
-        <Text style={styles.studentinfo}>Full Name: Suthan Sureshkumar</Text>
-        <Text style={styles.studentinfo}>Student ID: 101511337</Text>
-
+        <Text style={styles.studentinfo}>Full Name: Ayesha Akbar</Text>
+        <Text style={styles.studentinfo}>Student ID: 100949840</Text>
+        
         <Text style={styles.separator}>
           ----------------------------------------------
         </Text>
-
-        <Text style={styles.studentinfo}>Full Name: Ayesha Akbar</Text>
-        <Text style={styles.studentinfo}>Student ID: 100949840</Text>
-
+        <Text style={styles.studentinfo}>Full Name: Suthan Sureshkumar</Text>
+        <Text style={styles.studentinfo}>Student ID: 101511337</Text>
+        
         <Text style={styles.separator}>
           ----------------------------------------------
         </Text>
