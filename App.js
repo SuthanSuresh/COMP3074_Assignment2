@@ -266,7 +266,7 @@ export default function App() {
         <Stack.Screen
           name="About"
           component={AboutScreen}
-          options={{ title: "About" }}
+          options={{ title: "About Us" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
