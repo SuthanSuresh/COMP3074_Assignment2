@@ -8,8 +8,14 @@ import {
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { Picker } from "@react-native-picker/picker"; 
 
+
+// API Key used 
 const API_KEY = "fca_live_wf2aZBB398NMmejQZ7zd5geglOhT7aYpQahucMR3";
+
+// Drop down Currency countries
+const CURRENCIES = ["CAD", "USD", "EUR", "GBP", "AUD", "JPY", "INR"];
 
 const Stack = createStackNavigator();
 
@@ -23,6 +29,7 @@ function MainScreen({ navigation }) {
   const [rateUsed, setRateUsed] = useState(null);
 
 
+  //This is to vaildate the inputes to see if the currency code is correct or not 
   const validateInputs = () => {
     const codeRegex = /^[A-Z]{3}$/;
 
@@ -34,6 +41,8 @@ function MainScreen({ navigation }) {
       return "Currency codes must be 3-letter uppercase ISO codes (e.g: CAD).";
     }
 
+    // You must use a positvie number to get a currency 
+
     const num = Number(amount);
     if (isNaN(num) || num <= 0) {
       return "Amount must be a positive number.";
@@ -41,6 +50,8 @@ function MainScreen({ navigation }) {
 
     return null;
   };
+
+    // Response section from rate 
 
     const getRateFromResponse = (data, currencyCode) => {
     if (!data || !data.data) {
@@ -132,14 +143,20 @@ function MainScreen({ navigation }) {
         <Text style={styles.title}>Currency Converter</Text>
 
         <View style={styles.inputSection}>
-          <Text style={styles.label}>Base Currency</Text>
-          <TextInput
-            value={base}
-            onChangeText={(t) => setBase(t.toUpperCase())}
-            style={styles.input}
-            maxLength={3}
-          />
+        <Text style={styles.label}>Base Currency</Text>
+        <View style={styles.pickerWrapper}>
+          <Picker
+            selectedValue={base}
+            onValueChange={(value) => setBase(value)}
+            style={styles.picker}
+            dropdownIconColor="#1E8449">
+            {CURRENCIES.map((code) => (
+              <Picker.Item key={code} label={code} value={code} />
+            ))}
+          </Picker>
         </View>
+      </View>
+
 
         <View style={styles.inputSection}>
           <Text style={styles.label}>Destination Currency</Text>
@@ -357,5 +374,18 @@ const styles = StyleSheet.create({
     color: "#1E8449",
     textAlign: "center",
   },
+
+  pickerWrapper: {
+  borderWidth: 1,
+  borderColor: "#CCC",
+  borderRadius: 10,
+  backgroundColor: "white",
+  overflow: "hidden",
+  marginBottom: 10,
+},
+picker: {
+  height: 48,
+},
+
 
 });
