@@ -236,13 +236,13 @@ function AboutScreen() {
         <Text style={styles.studentinfo}>Student ID: 100949840</Text>
         
         <Text style={styles.separator}>
-          ----------------------------------------------
+          ************************************************
         </Text>
         <Text style={styles.studentinfo}>Full Name: Suthan Sureshkumar</Text>
         <Text style={styles.studentinfo}>Student ID: 101511337</Text>
         
         <Text style={styles.separator}>
-          ----------------------------------------------
+          ************************************************
         </Text>
 
         <Text style={styles.studentinfo}>
